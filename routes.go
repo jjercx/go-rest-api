@@ -6,6 +6,13 @@ import (
 	"github.com/gorilla/mux"
 )
 
+var routes = Routes{
+	Route{"root", "GET", "/", Index},
+	Route{"movies", "GET", "/movies", MovieIndex},
+	Route{"movie", "GET", "/movies/{id}", MovieShow},
+	Route{"createMovie", "POST", "/movies", MovieCreate},
+}
+
 // Route represents http routes of the app
 type Route struct {
 	Name    string
@@ -16,12 +23,6 @@ type Route struct {
 
 // Routes is a list of Route structs
 type Routes []Route
-
-var routes = Routes{
-	Route{"index", "GET", "/", Index},
-	Route{"movieIndex", "GET", "/movies", MovieIndex},
-	Route{"movieShow", "GET", "/movies/{id}", MovieShow},
-}
 
 // NewRouter bootstraps the app HTTP routes
 func NewRouter() *mux.Router {

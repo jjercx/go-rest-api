@@ -3,37 +3,52 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
-// Index handler
+var movies = Movies{
+	Movie{
+		"El Señor de los Anillos",
+		2001,
+		"Peter Jackson",
+	},
+	Movie{
+		"Titanic",
+		1998,
+		"James Cameron",
+	},
+}
+
+// Index just prints Hello World!
 func Index(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello world!")
 }
 
-// MovieIndex handler
+// MovieIndex list all movies
 func MovieIndex(w http.ResponseWriter, r *http.Request) {
-	movies := Movies{
-		Movie{
-			"El Señor de los Anillos",
-			2001,
-			"Peter Jackson",
-		},
-		Movie{
-			"Titanic",
-			1998,
-			"James Cameron",
-		},
-	}
 	json.NewEncoder(w).Encode(movies)
 }
 
-// MovieShow handler
+// MovieShow list details from an specific movie
 func MovieShow(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	movieID := params["id"]
 
 	fmt.Fprintf(w, "Mostrando la pelicula %s", movieID)
+}
+
+// MovieCreate adds a movie to the list
+func MovieCreate(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	newMovie := Movie{}
+	err := decoder.Decode(&newMovie)
+	if err != nil {
+		panic(err)
+	}
+	defer r.Body.Close()
+	log.Println(newMovie)
+	movies = append(movies, newMovie)
 }
