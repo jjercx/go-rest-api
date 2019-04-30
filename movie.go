@@ -1,5 +1,7 @@
 package main
 
+var movieCollection = getSession().DB("udemy-go-rest-api").C("movies")
+
 // Movie represents a movie
 type Movie struct {
 	Name     string `json:"name"`

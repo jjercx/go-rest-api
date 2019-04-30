@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -46,9 +45,11 @@ func MovieCreate(w http.ResponseWriter, r *http.Request) {
 	newMovie := Movie{}
 	err := decoder.Decode(&newMovie)
 	if err != nil {
-		panic(err)
+		w.WriteHeader(500)
 	}
 	defer r.Body.Close()
-	log.Println(newMovie)
-	movies = append(movies, newMovie)
+
+	movieCollection.Insert(newMovie)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
 }
